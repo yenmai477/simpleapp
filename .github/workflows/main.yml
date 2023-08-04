@@ -18,11 +18,11 @@ jobs:
     env:
       MYSQLDB_USER: ${{ secrets.MYSQLDB_USER }}
       MYSQLDB_ROOT_PASSWORD: ${{ secrets.MYSQLDB_ROOT_PASSWORD }}
-#      MYSQLDB_DATABASE: ${{ variables.MYSQLDB_DATABASE }}
-#      MYSQLDB_LOCAL_PORT: ${{ variables.MYSQLDB_LOCAL_PORT }}
-#      MYSQLDB_DOCKER_PORT: ${{ variables.MYSQLDB_DOCKER_PORT }}
-#      SPRING_LOCAL_PORT: ${{ variables.SPRING_LOCAL_PORT }}
-#      SPRING_DOCKER_PORT: ${{ variables.SPRING_DOCKER_PORT }}
+      MYSQLDB_DATABASE: ${{ vars.MYSQLDB_DATABASE }}
+      MYSQLDB_LOCAL_PORT: ${{ vars.MYSQLDB_LOCAL_PORT }}
+      MYSQLDB_DOCKER_PORT: ${{ vars.MYSQLDB_DOCKER_PORT }}
+      SPRING_LOCAL_PORT: ${{ vars.SPRING_LOCAL_PORT }}
+      SPRING_DOCKER_PORT: ${{ vars.SPRING_DOCKER_PORT }}
 
     #Job's steps
     steps:
@@ -84,6 +84,7 @@ jobs:
     name: Build & Push to DockerHub
     runs-on: ubuntu-latest
     needs: sonar
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v3
       - name: Login to DockerHub
@@ -110,11 +111,11 @@ jobs:
         run: |
           echo "MYSQLDB_USER=${{ secrets.MYSQLDB_USER }}" >>.env
           echo "MYSQLDB_ROOT_PASSWORD=${{ secrets.MYSQLDB_ROOT_PASSWORD }}" >>.env
-          echo "MYSQLDB_DATABASE=${{ MYSQLDB_DATABASE }}" >>.env
-          echo "MYSQLDB_LOCAL_PORT=${{ MYSQLDB_LOCAL_PORT }}" >>.env
-          echo "MYSQLDB_DOCKER_PORT=${{ MYSQLDB_DOCKER_PORT }}" >>.env
-          echo "SPRING_LOCAL_PORT=${{ SPRING_LOCAL_PORT }}" >>.env
-          echo "SPRING_DOCKER_PORT=${{ SPRING_DOCKER_PORT }}" >>.env
+          echo "MYSQLDB_DATABASE=${{ vars.MYSQLDB_DATABASE }}" >>.env
+          echo "MYSQLDB_LOCAL_PORT=${{ vars.MYSQLDB_LOCAL_PORT }}" >>.env
+          echo "MYSQLDB_DOCKER_PORT=${{ vars.MYSQLDB_DOCKER_PORT }}" >>.env
+          echo "SPRING_LOCAL_PORT=${{ vars.SPRING_LOCAL_PORT }}" >>.env
+          echo "SPRING_DOCKER_PORT=${{ vars.SPRING_DOCKER_PORT }}" >>.env
           
           mkdir -p ../files
           cp ./docker-compose.prod.yml ../files
@@ -143,7 +144,7 @@ jobs:
           
           script: |
             cd simpleapp
-            pwd
+            tar -xvf deploy.tar --strip-components=1
             cat docker-compose.prod.yml
             docker-compose -f docker-compose.prod.yml stop
             docker pull yenmai478/simpleapp:latest
