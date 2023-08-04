@@ -108,9 +108,9 @@ jobs:
 
       - name:  Package necessary files
         run: |
-          mkdir ../build
-          cp -TR ./docker-compose.prod.yml ../build
-          tar -cvf deploy.tar ../build/
+          mkdir -p ../files
+          cp ./docker-compose.prod.yml ../files
+          tar -cvf deploy.tar ../files/
 
       - name: Deploy necessary files
         uses: appleboy/scp-action@v0.1.4
