@@ -113,9 +113,6 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           
           script: |
-            pwd
-            mkdir -p simpleapp
-            cd /simpleapp
             docker-compose stop simpleapp
             docker pull yenmai478/simpleapp:latest
             docker-compose up -d
