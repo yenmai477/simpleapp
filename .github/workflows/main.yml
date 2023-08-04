@@ -110,11 +110,11 @@ jobs:
         run: |
           echo "MYSQLDB_USER=${{ secrets.MYSQLDB_USER }}" >>.env
           echo "MYSQLDB_ROOT_PASSWORD=${{ secrets.MYSQLDB_ROOT_PASSWORD }}" >>.env
-          echo "MYSQLDB_DATABASE=${{ MYSQLDB_DATABASE }}" >>.env
-          echo "MYSQLDB_LOCAL_PORT=${{ MYSQLDB_LOCAL_PORT }}" >>.env
-          echo "MYSQLDB_DOCKER_PORT=${{ MYSQLDB_DOCKER_PORT }}" >>.env
-          echo "SPRING_LOCAL_PORT=${{ SPRING_LOCAL_PORT }}" >>.env
-          echo "SPRING_DOCKER_PORT=${{ SPRING_DOCKER_PORT }}" >>.env
+          echo "MYSQLDB_DATABASE=$MYSQLDB_DATABASE" >>.env
+          echo "MYSQLDB_LOCAL_PORT=$MYSQLDB_LOCAL_PORT" >>.env
+          echo "MYSQLDB_DOCKER_PORT=$MYSQLDB_DOCKER_PORT" >>.env
+          echo "SPRING_LOCAL_PORT=$SPRING_LOCAL_PORT" >>.env
+          echo "SPRING_DOCKER_PORT=$SPRING_DOCKER_PORT" >>.env
           
           mkdir -p ../files
           cp ./docker-compose.prod.yml ../files
