@@ -105,13 +105,20 @@ jobs:
     name: Deploy to Droplet
     steps:
       - uses: actions/checkout@v3
+
+      - name:  Package necessary files
+        run: |
+          mkdir ../build
+          cp -TR docker-compose.prod.yml ../build
+          tar -cvf deploy.tar ../build/
+
       - name: Deploy necessary files
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: "./docker-compose.prod.yml"
+          source: "deploy.tar"
           target: "~/simpleapp"
       - name: Connect with SSH and Deploy
         uses: appleboy/ssh-action@master
