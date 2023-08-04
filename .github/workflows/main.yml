@@ -104,6 +104,35 @@ jobs:
     needs: build_and_push
     name: Deploy to Droplet
     steps:
+      - uses: actions/checkout@v3
+
+      - name:  Package necessary files
+        run: |
+          echo "MYSQLDB_USER=${{ secrets.MYSQLDB_USER }}" >>.env
+          echo "MYSQLDB_ROOT_PASSWORD=${{ secrets.MYSQLDB_ROOT_PASSWORD }}" >>.env
+          echo "MYSQLDB_DATABASE=${{ MYSQLDB_DATABASE }}" >>.env
+          echo "MYSQLDB_LOCAL_PORT=${{ MYSQLDB_LOCAL_PORT }}" >>.env
+          echo "MYSQLDB_DOCKER_PORT=${{ MYSQLDB_DOCKER_PORT }}" >>.env
+          echo "SPRING_LOCAL_PORT=${{ SPRING_LOCAL_PORT }}" >>.env
+          echo "SPRING_DOCKER_PORT=${{ SPRING_DOCKER_PORT }}" >>.env
+          
+          mkdir -p ../files
+          cp ./docker-compose.prod.yml ../files
+          cp ./.env ../files
+          tar -cvf deploy.tar ../files/
+          cat docker-compose.prod.yml
+
+      - name: Deploy necessary files
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "deploy.tar"
+          target: "~/simpleapp"
+
+
+
       - name: Connect with SSH and Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -113,9 +142,9 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           
           script: |
+            cd simpleapp
             pwd
-            mkdir -p simpleapp
-            cd /simpleapp
-            docker-compose stop simpleapp
+            cat docker-compose.prod.yml
+            docker-compose -f docker-compose.prod.yml stop
             docker pull yenmai478/simpleapp:latest
-            docker-compose up -d
+            docker-compose -f docker-compose.prod.yml up -d
