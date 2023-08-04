@@ -111,9 +111,10 @@ jobs:
           mkdir -p ../files
           cp ./docker-compose.prod.yml ../files
           tar -cvf deploy.tar ../files/
+          cat docker-compose.prod.yml
 
       - name: Deploy necessary files
-        uses: appleboy/scp-action@v0.1.4
+        uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
