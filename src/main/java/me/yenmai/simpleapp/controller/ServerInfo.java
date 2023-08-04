@@ -5,9 +5,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("server-info")
+@RequestMapping("/server-info")
 public class ServerInfo {
-  @RequestMapping("health-check")
+  @RequestMapping("/health-check")
   ResponseEntity<String> healthCheck() {
     return ResponseEntity.ok("Response from server!");
   }
