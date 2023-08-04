@@ -109,7 +109,7 @@ jobs:
       - name:  Package necessary files
         run: |
           mkdir ../build
-          cp -TR docker-compose.prod.yml ../build
+          cp -TR ./docker-compose.prod.yml ../build
           tar -cvf deploy.tar ../build/
 
       - name: Deploy necessary files
