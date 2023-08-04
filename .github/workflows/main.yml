@@ -104,6 +104,15 @@ jobs:
     needs: build_and_push
     name: Deploy to Droplet
     steps:
+      - uses: actions/checkout@v3
+      - name: copy file via ssh password
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          source: "docker-compose.prod.yml"
+          target: "/simpleapp"
       - name: Connect with SSH and Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -113,6 +122,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           
           script: |
+            cd simpleapp
             docker-compose stop simpleapp
             docker pull yenmai478/simpleapp:latest
-            docker-compose up -d
+            docker-compose -f docker-compose.prod.yml up -d
